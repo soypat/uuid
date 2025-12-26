@@ -103,6 +103,11 @@ func (uuid UUID) IsZero() bool {
 	return uuid == (UUID{})
 }
 
+// IsMax checks if the UUID is all 0xff's (all max value byte).
+func (uuid UUID) IsMax() bool {
+	return uuid == max
+}
+
 // Version returns the version bits of the uuid.
 func (uuid UUID) Version() Version {
 	return Version(uuid[6] >> 4)

@@ -245,3 +245,26 @@ func TestNewHashed_VersionAndVariant(t *testing.T) {
 		t.Errorf("expected RFC 4122 variant, got %02x", id[8])
 	}
 }
+
+func TestWriteRandHex(t *testing.T) {
+	gen := NewGeneratorV4()
+	lengths := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 15, 16, 17, 32, 33}
+
+	for _, n := range lengths {
+		buf := make([]byte, n)
+		err := gen.WriteRandHex(buf)
+		if err != nil {
+			t.Errorf("length %d: unexpected error: %v", n, err)
+			continue
+		}
+		for i, c := range buf {
+			if !isHexChar(c) {
+				t.Errorf("length %d: invalid hex char at position %d: %q", n, i, c)
+			}
+		}
+	}
+}
+
+func isHexChar(c byte) bool {
+	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')
+}

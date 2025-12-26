@@ -3,6 +3,7 @@ package uuid
 import (
 	"crypto/md5"
 	"crypto/rand"
+	"encoding/hex"
 	"errors"
 	"hash"
 	"io"
@@ -119,6 +120,32 @@ func (g *Generator) NewRandom() (uuid UUID, err error) {
 		g.setVersionData(uuid[:])
 	}
 	return uuid, err
+}
+
+// WriteRandHex generates random hexadecimal characters and encodes
+// them into b byte buffer. No allocations performed.
+func (g *Generator) WriteRandHex(b []byte) error {
+	if len(b) == 0 {
+		return nil
+	}
+	if len(b)%2 == 1 {
+		var src [1]byte
+		var dst [2]byte
+		err := g.random(src[:])
+		if err != nil {
+			return err
+		}
+		hex.Encode(dst[:], src[:])
+		b[len(b)-1] = dst[0]
+		b = b[:len(b)-1]
+	}
+	binaryPart := b[len(b)/2:]
+	err := g.random(binaryPart)
+	if err != nil {
+		return err
+	}
+	hex.Encode(b, binaryPart)
+	return nil
 }
 
 func (g *Generator) setVersionData(uuid []byte) {
