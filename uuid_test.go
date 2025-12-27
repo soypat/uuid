@@ -3,6 +3,7 @@ package uuid
 import (
 	"encoding/json"
 	"testing"
+	"unsafe"
 )
 
 // will crash if
@@ -267,4 +268,57 @@ func TestWriteRandHex(t *testing.T) {
 
 func isHexChar(c byte) bool {
 	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')
+}
+
+var randUUIDCorpus = make([]string, 100)
+var randUUIDs = make([]UUID, 100)
+
+func init() {
+	for i := range randUUIDCorpus {
+		randUUIDs[i] = uuid.MustRandom()
+		randUUIDCorpus[i] = randUUIDs[i].String()
+	}
+}
+
+func BenchmarkParse(b *testing.B) {
+	for b.Loop() {
+		for _, s := range randUUIDCorpus {
+			Parse(s)
+		}
+	}
+}
+
+func BenchmarkParseBytes(b *testing.B) {
+	for b.Loop() {
+		for _, data := range randUUIDCorpus {
+			bdata := unsafe.Slice(unsafe.StringData(data), len(data))
+			ParseBytes(bdata)
+		}
+	}
+}
+
+func BenchmarkAppendText(b *testing.B) {
+	buf := make([]byte, 0, 36)
+	for b.Loop() {
+		for _, id := range randUUIDs {
+			buf, _ = id.AppendText(buf[:0])
+		}
+	}
+}
+
+func BenchmarkEncode36(b *testing.B) {
+	buf := make([]byte, 0, 36)
+	for b.Loop() {
+		for _, id := range randUUIDs {
+			id.Encode36(buf[:0])
+		}
+	}
+}
+func BenchmarkEncode32(b *testing.B) {
+	buf := make([]byte, 0, 32)
+	for b.Loop() {
+		for _, id := range randUUIDs {
+			id.Encode32(buf[:0])
+		}
+	}
 }

@@ -44,3 +44,19 @@ id, err := uuid.Parse("urn:uuid:6ba7b810-9dad-11d1-80b4-00c04fd430c8")
 | Error handling | All errors checked and propagated up the call chain | Some errors silently ignored (e.g. rand.Read, hash.Write) |
 
 This package prioritizes explicit configuration over convenience, making it easier to test and avoiding hidden global state.
+
+
+## Benchmarks
+
+```
+go test ./...  -bench=. -benchmem
+goos: linux
+goarch: amd64
+pkg: github.com/soypat/uuid
+cpu: 12th Gen Intel(R) Core(TM) i5-12400F
+BenchmarkParse-12                 499062              2322 ns/op               0 B/op          0 allocs/op
+BenchmarkParseBytes-12            502353              2160 ns/op               0 B/op          0 allocs/op
+BenchmarkAppendText-12            733390              1611 ns/op               0 B/op          0 allocs/op
+BenchmarkEncode36-12             8865866               133.8 ns/op             0 B/op          0 allocs/op
+BenchmarkEncode32-12             9611780               124.5 ns/op             0 B/op          0 allocs/op
+```

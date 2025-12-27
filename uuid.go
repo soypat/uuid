@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
+	"io"
 	"slices"
 )
 
@@ -148,6 +149,28 @@ func (uuid *UUID) UnmarshalText(data []byte) error {
 	default:
 		return errInvalidLength
 	}
+}
+
+// Encode36 encodes the 36 byte hexadecimal representation of the UUID
+// into the first 36 bytes of the buffer.
+// i.e: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+func (uuid UUID) Encode36(b []byte) error {
+	if len(b) < 36 {
+		return io.ErrShortBuffer
+	}
+	encodeHex(b[len(b)-36:], uuid)
+	return nil
+}
+
+// Encode36 encodes the 32 byte hexadecimal representation of the UUID
+// into the first 32 bytes of the buffer.
+// i.e: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+func (uuid UUID) Encode32(b []byte) error {
+	if len(b) < 32 {
+		return io.ErrShortBuffer
+	}
+	hex.Encode(b[:32], uuid[:])
+	return nil
 }
 
 // AppendText implements encoding.TextAppender.
