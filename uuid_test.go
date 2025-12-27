@@ -322,3 +322,34 @@ func BenchmarkEncode32(b *testing.B) {
 		}
 	}
 }
+
+type benchStruct struct {
+	ID UUID `json:"id"`
+}
+
+func BenchmarkJSONMarshal(b *testing.B) {
+	structs := make([]benchStruct, len(randUUIDs))
+	for i, id := range randUUIDs {
+		structs[i] = benchStruct{ID: id}
+	}
+	b.ResetTimer()
+	for b.Loop() {
+		for _, s := range structs {
+			json.Marshal(s)
+		}
+	}
+}
+
+func BenchmarkJSONUnmarshal(b *testing.B) {
+	data := make([][]byte, len(randUUIDs))
+	for i, id := range randUUIDs {
+		data[i], _ = json.Marshal(benchStruct{ID: id})
+	}
+	b.ResetTimer()
+	for b.Loop() {
+		for _, d := range data {
+			var s benchStruct
+			json.Unmarshal(d, &s)
+		}
+	}
+}

@@ -54,9 +54,11 @@ goos: linux
 goarch: amd64
 pkg: github.com/soypat/uuid
 cpu: 12th Gen Intel(R) Core(TM) i5-12400F
-BenchmarkParse-12                 499062              2322 ns/op               0 B/op          0 allocs/op
-BenchmarkParseBytes-12            502353              2160 ns/op               0 B/op          0 allocs/op
-BenchmarkAppendText-12            733390              1611 ns/op               0 B/op          0 allocs/op
-BenchmarkEncode36-12             8865866               133.8 ns/op             0 B/op          0 allocs/op
-BenchmarkEncode32-12             9611780               124.5 ns/op             0 B/op          0 allocs/op
+BenchmarkParse-12                 486312              2275 ns/op               0 B/op          0 allocs/op
+BenchmarkParseBytes-12            532119              2156 ns/op               0 B/op          0 allocs/op
+BenchmarkAppendText-12            733122              1583 ns/op               0 B/op          0 allocs/op
+BenchmarkEncode36-12             8927175               131.1 ns/op             0 B/op          0 allocs/op
+BenchmarkEncode32-12             9765007               122.3 ns/op             0 B/op          0 allocs/op
+BenchmarkJSONMarshal-12            51573             22587 ns/op           11205 B/op        300 allocs/op
+BenchmarkJSONUnmarshal-12          20236             62974 ns/op           23200 B/op        500 allocs/op
 ```
