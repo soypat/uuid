@@ -57,10 +57,11 @@ func (uuid UUID) Time() Time {
 }
 
 func Parse(s string) (uuid UUID, err error) {
-	if len(s) != 32 && len(s) != 36+2 && len(s) != 36+9 {
-		return uuid, errInvalidFormat
+	switch len(s) {
+	case 32, 36, 36 + 2, 36 + 9:
+		return ParseBytes([]byte(s))
 	}
-	return ParseBytes([]byte(s))
+	return uuid, errInvalidFormat
 }
 
 var urnPfx = []byte("urn:uuid:")
